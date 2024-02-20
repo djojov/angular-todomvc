@@ -6,7 +6,11 @@ import { MainComponent } from './components/main/main.component';
 @Component({
   standalone: true,
   selector: 'app-todos',
-  template: `<app-todos-header /> <app-todos-main /> <app-todos-footer />`,
+  template: `
+    <div class="todoapp">
+      <app-todos-header /> <app-todos-main /> <app-todos-footer />
+    </div>
+  `,
   styleUrl: './todos.component.css',
   imports: [HeaderComponent, FooterComponent, MainComponent],
 })
