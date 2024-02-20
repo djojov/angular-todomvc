@@ -155,10 +155,6 @@ body {
   border-bottom: 1px solid #ededed;
 }
 
-.todo-list li:last-child {
-  border-bottom: none;
-}
-
 .todo-list li.editing {
   border-bottom: none;
   padding: 0;

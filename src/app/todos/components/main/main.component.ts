@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { TodosService } from '../../services/todos.service';
 import { FilterEnum } from '../../types/filter.enum';
@@ -10,16 +11,21 @@ import { TodoComponent } from '../todo/todo.component';
     <section class="main">
       <ul class="todo-list">
         @for (todo of visibleTodos(); track todo.id) {
-        <app-todos-todo [todo]="todo" />
+        <app-todos-todo
+          [todo]="todo"
+          [isEditing]="editingId === todo.id"
+          (setEditingId)="setEditingId($event)"
+        />
         }
       </ul>
     </section>
   `,
   styleUrl: './main.component.css',
-  imports: [TodoComponent],
+  imports: [TodoComponent, CommonModule],
 })
 export class MainComponent {
   todoService = inject(TodosService);
+  editingId: string | null = null;
 
   visibleTodos = computed(() => {
     const todos = this.todoService.todosSignal();
@@ -34,4 +40,8 @@ export class MainComponent {
 
     return todos;
   });
+
+  setEditingId(id: string | null) {
+    this.editingId = id;
+  }
 }
