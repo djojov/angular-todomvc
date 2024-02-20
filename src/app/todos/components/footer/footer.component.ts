@@ -43,22 +43,22 @@ import { FilterEnum } from '../../types/filter.enum';
   imports: [CommonModule],
 })
 export class FooterComponent {
-  todosSerice = inject(TodosService);
-  filterSignal = this.todosSerice.filterSignal;
+  todosService = inject(TodosService);
+  filterSignal = this.todosService.filterSignal;
   filterEnum = FilterEnum;
 
   activeCount = computed(() => {
-    return this.todosSerice.todosSignal().filter((todo) => !todo.isCompleted)
+    return this.todosService.todosSignal().filter((todo) => !todo.isCompleted)
       .length;
   });
 
-  noTodosClass = computed(() => this.todosSerice.todosSignal().length === 0);
+  noTodosClass = computed(() => this.todosService.todosSignal().length === 0);
   itemsLeftText = computed(
     () => `item${this.activeCount() === 1 ? '' : 's'} left`
   );
 
   changeFilter(event: Event, filter: FilterEnum) {
     event.preventDefault();
-    this.todosSerice.changeFilter(filter);
+    this.todosService.changeFilter(filter);
   }
 }

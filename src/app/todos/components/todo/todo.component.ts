@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  ElementRef,
   EventEmitter,
   OnInit,
   Output,
+  SimpleChanges,
+  ViewChild,
   inject,
   input,
 } from '@angular/core';
@@ -14,13 +17,21 @@ import { TodoInterface } from '../../types/todo.interface';
   standalone: true,
   selector: 'app-todos-todo',
   template: `
-    <li [ngClass]="{ editing: isEditing() }">
+    <li [ngClass]="{ editing: isEditing(), completed: todo().isCompleted }">
       <div class="view">
+        <input
+          class="toggle"
+          type="checkbox"
+          [checked]="todo().isCompleted"
+          (change)="toggleTodo()"
+        />
         <label (dblclick)="setTooInEditMode()">{{ todo().text }}</label>
+        <button class="destroy" (click)="removeTodo()"></button>
       </div>
       @if (isEditing()) {
       <input
         class="edit"
+        #textInput
         [value]="editingText"
         (keyup)="changeText($event)"
         (keyup.enter)="changeTodo()"
@@ -36,10 +47,20 @@ export class TodoComponent implements OnInit {
   @Output() setEditingId: EventEmitter<string | null> = new EventEmitter();
   todoService = inject(TodosService);
 
+  @ViewChild('textInput') textInput?: ElementRef;
+
   editingText = '';
 
   ngOnInit() {
     this.editingText = this.todo().text;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['isEditing'].currentValue) {
+      setTimeout(() => {
+        this.textInput?.nativeElement.focus();
+      }, 0);
+    }
   }
 
   changeText(event: Event) {
@@ -55,5 +76,13 @@ export class TodoComponent implements OnInit {
 
   setTooInEditMode() {
     this.setEditingId.emit(this.todo().id);
+  }
+
+  removeTodo() {
+    this.todoService.removeTodo(this.todo().id);
+  }
+
+  toggleTodo() {
+    this.todoService.toggleTodo(this.todo().id);
   }
 }

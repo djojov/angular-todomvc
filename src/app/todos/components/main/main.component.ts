@@ -8,7 +8,15 @@ import { TodoComponent } from '../todo/todo.component';
   standalone: true,
   selector: 'app-todos-main',
   template: `
-    <section class="main">
+    <section class="main" [ngClass]="{ hidden: noTodosClass() }">
+      <input
+        type="checkbox"
+        id="toggle-all"
+        class="toggle-all"
+        [checked]="isAllTodosSelected()"
+        (change)="toggleAllTodos($event)"
+      />
+      <label for="toggle-all">Mark all as completed</label>
       <ul class="todo-list">
         @for (todo of visibleTodos(); track todo.id) {
         <app-todos-todo
@@ -41,7 +49,18 @@ export class MainComponent {
     return todos;
   });
 
+  isAllTodosSelected = computed(() =>
+    this.todoService.todosSignal().every((todo) => todo.isCompleted)
+  );
+
+  noTodosClass = computed(() => this.todoService.todosSignal().length === 0);
+
   setEditingId(id: string | null) {
     this.editingId = id;
+  }
+
+  toggleAllTodos(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.todoService.toggleAllTodos(target.checked);
   }
 }

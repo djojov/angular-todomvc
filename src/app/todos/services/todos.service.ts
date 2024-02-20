@@ -27,4 +27,22 @@ export class TodosService {
       todos.map((todo) => (todo.id === id ? { ...todo, text } : todo))
     );
   }
+
+  removeTodo(id: string) {
+    this.todosSignal.update((todos) => todos.filter((todo) => todo.id !== id));
+  }
+
+  toggleTodo(id: string) {
+    this.todosSignal.update((todos) =>
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
+      )
+    );
+  }
+
+  toggleAllTodos(isCompleted: boolean) {
+    this.todosSignal.update((todos) =>
+      todos.map((todo) => ({ ...todo, isCompleted }))
+    );
+  }
 }
